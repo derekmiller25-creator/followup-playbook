@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16181c" media="(prefers-color-scheme: dark)">
+<script>(function(){var m;try{m=localStorage.getItem('followupPlaybook.theme')}catch(e){}if(m!=='dark'&&m!=='light')m='auto';var r=document.documentElement;r.setAttribute('data-theme',m);
+var mq=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)');window.__applyThemeMeta=function(){var mode=r.getAttribute('data-theme'),dark=mode==='dark'||(mode==='auto'&&mq&&mq.matches);
+var ms=document.querySelectorAll('meta[name=theme-color]');for(var i=0;i<ms.length;i++){if(mode==='auto'){ms[i].content=ms[i].media.indexOf('dark')>=0?'#16181c':'#ffffff'}else{ms[i].content=dark?'#16181c':'#ffffff'}}
+var cs=document.querySelector('meta[name=color-scheme]');if(cs)cs.content=mode==='auto'?'light dark':mode};window.__applyThemeMeta()})();</script>
 <title>Follow-up Playbook</title>
 <style>
 :root{--red:#EB0A1E;--ink:#1a1a1a;--mute:#666;--line:#e3e3e3}
@@ -31,8 +38,32 @@ pre{white-space:pre-wrap;font:inherit;margin:6px 0;background:#fcfcfc;padding:8p
 dialog{border:none;border-radius:12px;width:min(640px,94vw);padding:16px}
 dialog label{display:block;margin:8px 0;font-size:14px;color:var(--mute)}dialog input,dialog select{width:100%}
 .src{font-size:12px;color:var(--mute)}
-select,input,textarea{max-width:100%;box-sizing:border-box}#scen{flex:1 1 100%;min-width:0}</style></head><body>
-<header><h1>Follow-up <span>Playbook</span></h1>
+select,input,textarea{max-width:100%;box-sizing:border-box}#scen{flex:1 1 100%;min-width:0}
+:root{color-scheme:light dark;--bg:#fafafa;--surface:#fff;--surface2:#f1f1f1;--pre:#f6f6f6;--ink:#1a1a1a;--mute:#5f5f5f;--line:#e3e3e3;--field-line:#8a8a8a;--accent:#c40818;--btn-red:#c40818;--on-red:#fff;--toast-bg:#222;--toast-ink:#fff;--warn-bg:#fff3cd;--warn-line:#c9a227;--backdrop:rgba(0,0,0,.45)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark;--bg:#121316;--surface:#1c1e22;--surface2:#2a2d33;--pre:#16181c;--ink:#ececec;--mute:#b0b0b0;--line:#33363c;--field-line:#7b8089;--accent:#ff6b77;--btn-red:#c40818;--on-red:#fff;--toast-bg:#ececec;--toast-ink:#111;--warn-bg:#3a3114;--warn-line:#8a7428;--backdrop:rgba(0,0,0,.65)}
+@media (prefers-color-scheme:dark){:root[data-theme=auto]{color-scheme:dark;--bg:#121316;--surface:#1c1e22;--surface2:#2a2d33;--pre:#16181c;--ink:#ececec;--mute:#b0b0b0;--line:#33363c;--field-line:#7b8089;--accent:#ff6b77;--btn-red:#c40818;--on-red:#fff;--toast-bg:#ececec;--toast-ink:#111;--warn-bg:#3a3114;--warn-line:#8a7428;--backdrop:rgba(0,0,0,.65)}}
+html,body{background:var(--bg);color:var(--ink)}
+header{background:var(--surface);border-bottom-color:var(--btn-red)}
+h1 span,.phase{color:var(--accent)}
+select,input,textarea{background:var(--surface);color:var(--ink);border-color:var(--field-line)}
+input::placeholder,textarea::placeholder{color:var(--mute);opacity:1}
+button{background:var(--surface);color:var(--ink);border-color:var(--field-line)}
+button.p{background:var(--btn-red);color:var(--on-red);border-color:var(--btn-red)}
+button.d{color:var(--accent);border-color:var(--accent);background:var(--surface)}
+details,.card{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.card{border-left-color:var(--btn-red)}
+.tag{background:var(--surface2);color:var(--ink)}
+pre{background:var(--pre);color:var(--ink)}
+.note,.src,.fill label,dialog label{color:var(--mute)}
+#toast{background:var(--toast-bg);color:var(--toast-ink)}
+dialog{background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:var(--backdrop)}
+#list p{color:var(--mute)!important}
+header{position:sticky}
+#themeT{position:absolute;top:10px;right:12px;min-height:36px;padding:4px 10px;font-size:13px}
+</style></head><body>
+<header><button id="themeT" type="button" aria-label="Theme: Auto">Theme: Auto</button><h1>Follow-up <span>Playbook</span></h1>
 <div class="fill" id="fill"></div></header>
 <div class="wrap">
 <div class="row"><select id="scen" aria-label="Scenario"></select>
@@ -55,6 +86,7 @@ select,input,textarea{max-width:100%;box-sizing:border-box}#scen{flex:1 1 100%;m
 <dialog id="sdlg"><form method="dialog"><h3>Scenario</h3><label>Name<input name="name" required></label>
 <label>Notes / rules (one per line)<textarea name="notes"></textarea></label>
 <div class="row"><button value="cancel" formnovalidate>Cancel</button><button value="ok" class="p">Save</button></div></form></dialog>
+<dialog id="mcopy"><form method="dialog"><h3>Copy this text</h3><p style="color:var(--mute);font-size:14px;margin:0 0 6px">Your browser blocked automatic copying. The text is selected below. Press and hold (or Ctrl/Cmd+C) to copy.</p><textarea id="mcopyT" readonly></textarea><div class="row"><button value="ok" class="p">Done</button></div></form></dialog>
 <script>
 const KEY='followupPlaybook.v1',FKEY='followupPlaybook.fill';
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -97,7 +129,7 @@ const scen=()=>db.scenarios.find(s=>s.id===cur)||db.scenarios[0];
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1200)}
 function legacyCopy(t){const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;opacity:0;font-size:16px';document.body.appendChild(a);a.focus();a.select();try{a.setSelectionRange(0,t.length)}catch(e){}let ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();return ok}
 async function copy(t){let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);ok=true}}catch(e){}
- if(!ok)ok=legacyCopy(t);if(ok)toast('Copied');else window.prompt('Copy this text:',t)}
+ if(!ok)ok=legacyCopy(t);if(ok)toast('Copied');else manualCopy(t)}
 $('fill').innerHTML=FIELDS.map(([k])=>`<label>[${k}]<input data-k="${k}" value="${esc(fill[k])}"></label>`).join('');
 $('fill').oninput=e=>{fill[e.target.dataset.k]=e.target.value;localStorage.setItem(FKEY,JSON.stringify(fill));render()};
 function renderSel(){$('scen').innerHTML=db.scenarios.map(s=>`<option value="${s.id}"${s.id===cur?' selected':''}>${esc(s.name)}</option>`).join('');
@@ -144,7 +176,13 @@ function loadLatest(){const key=s=>s.name.trim().toLowerCase();let add=0,upd=0;
  else if(!od.length)db.seedVersion=SEED_VERSION;
  save();render();banner();toast(add||upd?('Added '+add+', updated '+upd):(od.length?'No changes':'Already up to date'))}
 $('loadT').onclick=loadLatest;
-function banner(){const n=outdated().length;let b=$('upd');if(!b){b=document.createElement('div');b.id='upd';b.style.cssText='background:#fff3cd;border:1px solid #e0c060;border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px';$('notes').before(b)}
+function banner(){const n=outdated().length;let b=$('upd');if(!b){b=document.createElement('div');b.id='upd';b.style.cssText='background:var(--warn-bg);color:var(--ink);border:1px solid var(--warn-line);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px';$('notes').before(b)}
  b.style.display=n?'block':'none';b.innerHTML=n?n+' built-in template(s) have a newer version. Tap <b>Load latest templates</b> to update.':''}
 banner();
+
+function manualCopy(t){const d=$('mcopy'),a=$('mcopyT');a.value=t;try{d.showModal()}catch(e){d.setAttribute('open','')}a.focus();a.select();try{a.setSelectionRange(0,t.length)}catch(e){}}
+(function(){const TK='followupPlaybook.theme',L={auto:'Auto',dark:'Dark',light:'Light'},N={auto:'dark',dark:'light',light:'auto'},r=document.documentElement,b=$('themeT');
+ const show=()=>{const m=r.getAttribute('data-theme')||'auto';b.textContent='Theme: '+L[m];b.setAttribute('aria-label','Theme: '+L[m]+'. Tap to change.')};
+ b.onclick=()=>{const m=N[r.getAttribute('data-theme')||'auto'];r.setAttribute('data-theme',m);try{localStorage.setItem(TK,m)}catch(e){}window.__applyThemeMeta&&window.__applyThemeMeta();show()};
+ const mq=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener)mq.addEventListener('change',()=>window.__applyThemeMeta&&window.__applyThemeMeta());show()})();
 </script></body></html>
